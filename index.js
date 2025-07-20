@@ -9,7 +9,11 @@ const port = process.env.PORT || 15000;
 
 app.use(cors({
   origin:[
-    'http://localhost:5173'
+   " http://localhost:5173",
+    "https://food-64053.web.app",
+    "https://food-64053.firebaseapp.com"
+    
+
   ], 
    credentials:true
 }));
@@ -75,11 +79,9 @@ async function run() {
     // await client.connect();
 
      const foodsCollection = client.db('foodsConnect').collection('foods');
-    //  const foodCollection = client.db('foodsConnect').collection('food');
+   
      const bookingFoodCollection =client.db('foodsConnect').collection('bookingFood')
-    //  console.log(foodCollection)
-    //  const bookingCollection = client.db('foodsConnect').collection('bookings');
-    //  console.log(bookingCollection)
+   
 
     //auth related api
    
@@ -95,16 +97,7 @@ app.post('/jwt'
   const token = jwt.sign(user, process.env.ACCESS_TOKEN_SECRET,
      {expiresIn: '1h'})
 
-  res.cookie('token', token,cookieOption,
-    {
-    httpOnly:true,
-    secure: true,
-    // true,
-     //http://localhost:5173/Login,
-    sameSite: 'none'
-  }
-)
-  .send({success: true});
+  res.cookie('token', token,cookieOption).send({success: true});
 // res.send(token)
 
 })
@@ -130,13 +123,18 @@ app.post('/logout', async(req,res)=>{
       const id =req.params.id;
       const query = { _id: new ObjectId(id)}
       const options = {
-        projection: {estate_title: 1,photoURL: 1, price: 1, service_id: 1,description:1,  image: 1, 	 },
+        projection: {estate_title: 1,photoURL: 1, price: 1, service_id: 1,description:1,  image: 1, recipe: 1	 },
       };
       const result =await foodsCollection.findOne(query,options);
       res.send(result);
     })
 
+  
+
       // bookings
+
+  
+
 
     app.get('/bookingFood',verifyToken,logger,async(req, res) =>{
      console.log(req.query.email);
@@ -144,7 +142,7 @@ app.post('/logout', async(req,res)=>{
       // console.log('tttt token',req.cookies.token)
       // console.log('user in the valid token',req.user)
       // console.log('cook cookies',req.cookies)
-      if(req.query.email !== req.user .email){
+      if(req.user.email !== req.query.email){
         return res.status(403).send({message: 'forbidden access'})
       }
       let query = {};
@@ -199,7 +197,7 @@ app.post('/logout', async(req,res)=>{
 
 
     // Send a ping to confirm a successful connection
-    await client.db("admin").command({ ping: 1 });
+    // await client.db("admin").command({ ping: 1 });
     console.log("Pinged your deployment. You successfully connected to MongoDB!");
   } finally {
     // Ensures that the client will close when you finish/error
