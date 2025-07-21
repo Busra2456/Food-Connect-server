@@ -7,11 +7,13 @@ const cookieParser = require('cookie-parser')
 const app = express();
 const port = process.env.PORT || 15000;
 
+
 app.use(cors({
   origin:[
    " http://localhost:5173",
     "https://food-64053.web.app",
-    "https://food-64053.firebaseapp.com"
+    "https://food-64053.firebaseapp.com",
+    "https://foot-connect-95c3a.web.app" 
     
 
   ], 
@@ -150,10 +152,10 @@ app.post('/logout', async(req,res)=>{
         query = { email:req.query.email}
       }
 
-      const cursor = bookingFoodCollection.find();
-      const result = await cursor.toArray();
+      // const cursor = bookingFoodCollection.find();
+      // const result = await cursor.toArray();
 
-      // const result = await bookingCollection.find().toArray();
+      const result = await bookingFoodCollection.find().toArray();
       res.send(result);
 
 
